@@ -17,9 +17,11 @@ export class TicketsController extends BaseController {
             const ticketData = request.body
             ticketData.accountId = user.id
             const newTicket = await ticketsService.createTicket(ticketData)
-            response.send(ticketData)
+            response.send(newTicket)
         } catch (error) {
             next(error)
         }
     }
+
+
 }
