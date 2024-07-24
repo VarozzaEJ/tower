@@ -21,9 +21,11 @@ TowerEventSchema.virtual('creator', {
     justOne: true
 })
 
-// TowerEventSchema.virtual('ticketCount', {
-//     localField: 'capacity',
-//     ref: ''
-// })
+TowerEventSchema.virtual('ticketCount', {
+    localField: '_id',
+    ref: 'Ticket',
+    foreignField: 'eventId',
+    count: true
+})
 
 //FIXME make ticketCount virtual and find out what it refs to

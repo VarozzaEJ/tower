@@ -32,11 +32,11 @@ async function getAllEvents() {
   <div class="container-fluid ">
     <div class="row hero-bg fs-1 text-light justify-content-center align-items-center">
       <div class="col-12 text-shadow">
-        <p class="w-50">
+        <p class="w-md-50">
           Event Management for people, by people
         </p>
-        <p class="fs-3 w-75">
-          Whatevery your interest, from hiking and reading, to networking and skill sharing, there are thousands who
+        <p class="fs-3 w-md-75">
+          Whatever your interest, from hiking and reading, to networking and skill sharing, there are thousands who
           share it on Tower. Events are happening every day-log in to join the fun.
         </p>
       </div>
@@ -48,16 +48,16 @@ async function getAllEvents() {
           How Tower Works
         </p>
       </div>
-      <div class="col-6  rounded d-flex justify-content-center">
+      <div class="col-md-6 mb-3 mbmd-0 mb rounded d-flex justify-content-center">
         <div class="card bg-body-secondary" style="width: 18rem; height: 13rem">
-          <div class="card-body">
+          <div class="card-body ">
             <h5 class="card-title">Discover Events You're Interested In</h5>
             <p class="card-text">Browse through community hosted events for all of the things you love.</p>
 
           </div>
         </div>
       </div>
-      <div class="col-6 ">
+      <div class="col-md-6 rounded d-flex justify-content-center">
         <div class="card bg-body-secondary" style="width: 18rem; height: 13rem;">
           <div class="card-body">
             <h5 class="card-title">Start an event to invite your friends</h5>
@@ -75,7 +75,7 @@ async function getAllEvents() {
           Explore Top Categories
         </p>
       </div>
-      <div class="col-2">
+      <div class="col-md-2 d-flex justify-content-center mb-3 mbmd-0">
         <div class="card bg-body-secondary " style="width: 9rem; height: 6rem;">
           <div class="card-body d-flex flex-column align-items-center">
             <h5 class="card-title fs-2"><i class="mdi mdi-infinity text-success"></i></h5>
@@ -83,7 +83,7 @@ async function getAllEvents() {
           </div>
         </div>
       </div>
-      <div class="col-2">
+      <div class="col-md-2 d-flex justify-content-center mb-3 mbmd-0">
         <div class="card bg-body-secondary " style="width: 9rem; height: 6rem;">
           <div class="card-body d-flex flex-column align-items-center">
             <h5 class="card-title fs-2"><i class="mdi mdi-guitar-electric text-purple"></i></h5>
@@ -91,7 +91,7 @@ async function getAllEvents() {
           </div>
         </div>
       </div>
-      <div class="col-2">
+      <div class="col-md-2 d-flex justify-content-center mb-3 mbmd-0">
         <div class="card bg-body-secondary " style="width: 9rem; height: 6rem;">
           <div class="card-body d-flex flex-column align-items-center">
             <h5 class="card-title fs-2"><i class="mdi mdi-account-multiple text-primary"></i></h5>
@@ -99,7 +99,7 @@ async function getAllEvents() {
           </div>
         </div>
       </div>
-      <div class="col-2">
+      <div class="col-md-2 d-flex justify-content-center mb-3 mbmd-0">
         <div class="card bg-body-secondary " style="width: 9rem; height: 6rem;">
           <div class="card-body d-flex flex-column align-items-center">
             <h5 class="card-title fs-2"><i class="mdi mdi-soccer text-info"></i></h5>
@@ -107,7 +107,7 @@ async function getAllEvents() {
           </div>
         </div>
       </div>
-      <div class="col-2">
+      <div class="col-md-2 d-flex justify-content-center mb-3 mbmd-0">
         <div class="card bg-body-secondary " style="width: 9rem; height: 6rem;">
           <div class="card-body d-flex flex-column align-items-center">
             <h5 class="card-title fs-2"><i class="mdi mdi-laptop text-danger"></i></h5>
@@ -123,7 +123,7 @@ async function getAllEvents() {
         </p>
       </div>
       <div class="row d-flex justify-content-center">
-        <div v-for="event in towerEvents" :key="event.id" class="col-4">
+        <div v-for="event in towerEvents" :key="event.id" class="col-md-4 d-flex justify-content-center">
           <TowerEventCard :eventProp='event' />
         </div>
       </div>
