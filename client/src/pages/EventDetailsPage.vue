@@ -11,8 +11,15 @@ const route = useRoute()
 const towerEvent = computed(() =>
     AppState.activeTowerEvent
 )
+const eventGoerProfiles = computed(() => AppState.eventGoerProfiles)
+const identity = computed(() => AppState.identity)
+const isFilled = computed(() => AppState.activeTowerEvent.isFilled)
 
-onMounted(() => getEventById())
+onMounted(() => {
+    getEventById()
+    getEventGoerProfiles()
+
+})
 
 async function getEventById() {
     try {
@@ -32,6 +39,26 @@ async function cancelEvent() {
     catch (error) {
         logger.log(error)
         Pop.error(error);
+    }
+}
+
+async function attendEvent() {
+    try {
+        const eventGoerData = { eventId: route.params.eventId }
+        await towerEventsService.attendEvent(eventGoerData)
+    }
+    catch (error) {
+        Pop.error('There was a problem in attempting to attend the event');
+    }
+}
+
+async function getEventGoerProfiles() {
+    try {
+        await towerEventsService.getEventGoerProfiles(route.params.eventId)
+    }
+    catch (error) {
+        Pop.error('Could not get attendees for this album');
+        logger.error(error)
     }
 }
 
@@ -57,13 +84,16 @@ async function cancelEvent() {
         <div class="row d-flex mt-4 justify-content-around">
             <div class="col-md-6 ">
                 <div class="d-flex  align-items-center">
-                    <p v-if="towerEvent.isCanceled" class="me-3 mb-0 fs-2 text-danger fw-bold">{{ towerEvent.name }}</p>
+                    <p v-if="towerEvent.isCanceled" class="me-3 mb-0 fs-2 text-danger fw-bold">{{ towerEvent.name }}
+                    </p>
                     <p v-else class="me-3 mb-0 fs-2 fw-bold">{{ towerEvent.name }}</p>
                     <div class="">
                         <div role="" class="d-flex bg-primary rounded-pill text-light px-3 py-1 ms-2">
                             {{ towerEvent.type }}</div>
 
                     </div>
+                    <div v-if="isFilled" class="d-flex bg-success rounded-pill text-light px-3 py-1 ms-2">
+                        Sold Out</div>
                 </div>
                 <div class="col-12 d-flex justify-content-center">
                     <p class="fs-6">{{ towerEvent.description }}</p>
@@ -128,10 +158,12 @@ async function cancelEvent() {
                                 <h5 class="card-title text-center">Interested in Going?</h5>
                                 <p class="card-text text-center">Grab A Ticket
                                 </p>
-                                <button class="btn btn-info text-center">Attend</button>
+                                <button v-if="towerEvent.isAttending == false" @click="attendEvent()"
+                                    class="btn btn-info text-center">Attend</button>
+                                <button v-else disabled class="btn btn-success text-center">Attending</button>
                             </div>
                             <div class="text-end">
-                                <span class="me-2">2 Spots Left</span>
+                                <span class="me-2">{{ eventGoerProfiles.length }} attending</span>
                             </div>
                         </div>
                     </div>
@@ -139,9 +171,14 @@ async function cancelEvent() {
                         <span>Attendees</span>
                         <div class="card bg-body-secondary " style="">
                             <div class="card-body d-flex justify-content-center flex-column">
-                                <div class="border border-dark">
-                                    <img class="creator-img" :src="towerEvent.creator.picture" alt="">
-                                    <span class="ms-2">Varozza, Evan</span>
+                                <div v-for="eventGoer in eventGoerProfiles" :key="eventGoer.id" class="row mb-3">
+                                    <div class="col-12  w-100 d-flex justify-content-center align-items-center">
+                                        <div class="border-start border-primary ">
+
+                                            <img class="creator-img ms-2" :src="eventGoer.profile.picture" alt="">
+                                            <span class="ms-3">{{ eventGoer.profile.name }}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="text-end">

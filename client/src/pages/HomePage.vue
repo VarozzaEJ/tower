@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { towerEventsService } from '../services/TowerEventsService.js';
 import Pop from '../utils/Pop.js';
 import { AppState } from '../AppState.js';
@@ -7,12 +7,20 @@ import { TowerEvent } from '../models/TowerEvent.js';
 import TowerEventCard from '../components/TowerEventCard.vue';
 
 
-const towerEvents = computed(() => AppState.towerEvents)
+const categoryFilter = ref('all')
+
+const towerEvents = computed(() => {
+  if (categoryFilter.value == 'all') {
+    return AppState.towerEvents
+  }
+  return AppState.towerEvents.filter(event => event.type == categoryFilter.value)
+})
+
+const categories = ['all', 'concert', 'convention', 'sport', 'digital', 'misc']
 
 onMounted(() => {
   getAllEvents()
 })
-
 
 
 
@@ -76,7 +84,8 @@ async function getAllEvents() {
         </p>
       </div>
       <div class="col-md-2 d-flex justify-content-center mb-3 mbmd-0">
-        <div class="card bg-body-secondary " style="width: 9rem; height: 6rem;">
+        <div role="button" @click="categoryFilter = 'all'" class="card bg-body-secondary "
+          style="width: 9rem; height: 6rem;">
           <div class="card-body d-flex flex-column align-items-center">
             <h5 class="card-title fs-2"><i class="mdi mdi-infinity text-success"></i></h5>
             <h5 class="card-title fw-bold">All</h5>
@@ -84,7 +93,8 @@ async function getAllEvents() {
         </div>
       </div>
       <div class="col-md-2 d-flex justify-content-center mb-3 mbmd-0">
-        <div class="card bg-body-secondary " style="width: 9rem; height: 6rem;">
+        <div role="button" @click="categoryFilter = 'concert'" class="card bg-body-secondary "
+          style="width: 9rem; height: 6rem;">
           <div class="card-body d-flex flex-column align-items-center">
             <h5 class="card-title fs-2"><i class="mdi mdi-guitar-electric text-purple"></i></h5>
             <h5 class="card-title fw-bold">Concerts</h5>
@@ -92,7 +102,8 @@ async function getAllEvents() {
         </div>
       </div>
       <div class="col-md-2 d-flex justify-content-center mb-3 mbmd-0">
-        <div class="card bg-body-secondary " style="width: 9rem; height: 6rem;">
+        <div role="button" @click="categoryFilter = 'convention'" class="card bg-body-secondary "
+          style="width: 9rem; height: 6rem;">
           <div class="card-body d-flex flex-column align-items-center">
             <h5 class="card-title fs-2"><i class="mdi mdi-account-multiple text-primary"></i></h5>
             <h5 class="card-title fw-bold">Conventions</h5>
@@ -100,7 +111,8 @@ async function getAllEvents() {
         </div>
       </div>
       <div class="col-md-2 d-flex justify-content-center mb-3 mbmd-0">
-        <div class="card bg-body-secondary " style="width: 9rem; height: 6rem;">
+        <div role="button" @click="categoryFilter = 'sport'" class="card bg-body-secondary "
+          style="width: 9rem; height: 6rem;">
           <div class="card-body d-flex flex-column align-items-center">
             <h5 class="card-title fs-2"><i class="mdi mdi-soccer text-info"></i></h5>
             <h5 class="card-title fw-bold">Sports</h5>
@@ -108,7 +120,8 @@ async function getAllEvents() {
         </div>
       </div>
       <div class="col-md-2 d-flex justify-content-center mb-3 mbmd-0">
-        <div class="card bg-body-secondary " style="width: 9rem; height: 6rem;">
+        <div role="button" @click="categoryFilter = 'digital'" class="card bg-body-secondary "
+          style="width: 9rem; height: 6rem;">
           <div class="card-body d-flex flex-column align-items-center">
             <h5 class="card-title fs-2"><i class="mdi mdi-laptop text-danger"></i></h5>
             <h5 class="card-title fw-bold">Digital</h5>
