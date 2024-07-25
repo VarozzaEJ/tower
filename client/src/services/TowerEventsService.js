@@ -7,6 +7,10 @@ import { api } from "./AxiosService.js"
 
 
 class TowerEventsService {
+    async deleteComment(commentId) {
+        const commentToDelete = await api.delete(`api/comments/${commentId}`)
+        return commentToDelete
+    }
     async getAllComments(eventId) {
         AppState.comments = []
         const response = await api.get(`api/events/${eventId}/comments`)
@@ -16,7 +20,7 @@ class TowerEventsService {
     async createComment(commentData) {
         const response = await api.post('api/comments', commentData)
         const newComment = new Comment(response.data)
-        AppState.comments.push(newComment)
+        AppState.comments.unshift(newComment)
     }
 
     async cancelEvent(eventId) {

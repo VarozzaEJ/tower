@@ -14,7 +14,7 @@ const towerEvent = computed(() =>
 const eventGoerProfiles = computed(() => AppState.eventGoerProfiles)
 const identity = computed(() => AppState.identity)
 const isFilled = computed(() => AppState.activeTowerEvent.isFilled)
-const isGoing = computed(() => AppState.eventGoerProfiles.find(profileData => profileData.accountId == AppState.account.id))
+const isGoing = computed(() => AppState.eventGoerProfiles.find(profileData => profileData.accountId == AppState.account?.id))
 const comments = computed(() => AppState.comments)
 
 const commentData = ref({
@@ -32,6 +32,7 @@ onMounted(() => {
 async function getEventById() {
     try {
         await towerEventsService.getEventById(route.params.eventId)
+
 
     }
     catch (error) {
@@ -93,6 +94,21 @@ async function getAllComments() {
     }
     catch (error) {
         Pop.error('Error getting Comments');
+        logger.error(error)
+    }
+}
+
+async function deleteComment(commentId) {
+    try {
+        const wantsToDelete = await Pop.confirm("Are You Sure?")
+        if (!wantsToDelete) return Pop.toast('Comment Was Not Deleted')
+        await towerEventsService.deleteComment(commentId)
+        getAllComments()
+        Pop.toast("Comment was deleted")
+    }
+    catch (error) {
+        Pop.error("Couldn't delete comment");
+        logger.error(error)
     }
 }
 
@@ -160,8 +176,11 @@ async function getAllComments() {
                                 <div v-for="comment in comments" :key="comment.id" class="col-12 mt-3">
                                     <!-- TODO make component and v-for the comments on the line above -->
                                     <div class="row border border-dark mb-3">
-                                        <div class="col-2 d-flex align-items-center">
+                                        <div class="col-md-2 justify-content-between d-flex align-items-center">
                                             <img class="creator-img" :src="comment.creator.picture" alt="">
+                                            <div><button v-if="AppState.account?.id == comment.creator?.id"
+                                                    @click="deleteComment(comment.id)" class="btn btn-danger "><i
+                                                        class="mdi mdi-delete-forever"></i></button></div>
                                         </div>
                                         <div class="col-md-10 d-flex flex-column">
                                             <div class="d-flex flex-column">
