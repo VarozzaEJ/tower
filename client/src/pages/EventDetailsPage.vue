@@ -48,6 +48,7 @@ async function attendEvent() {
     try {
         const eventGoerData = { eventId: route.params.eventId }
         await towerEventsService.attendEvent(eventGoerData)
+        getEventById()
     }
     catch (error) {
         Pop.error('There was a problem in attempting to attend the event');
@@ -60,6 +61,7 @@ async function getEventGoerProfiles() {
     try {
         getEventById()
         await towerEventsService.getEventGoerProfiles(route.params.eventId)
+        getEventById()
     }
     catch (error) {
         Pop.error('Could not get attendees for this album');
