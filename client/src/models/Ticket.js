@@ -18,7 +18,7 @@ export class EventGoerProfile extends Ticket {
     }
 }
 
-export class EventGoerAlbum extends Ticket {
+export class EventGoerEvent extends Ticket {
     constructor(data) {
         super(data)
         this.event = new TowerEvent(data.event)

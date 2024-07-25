@@ -14,6 +14,8 @@ const towerEvent = computed(() =>
 const eventGoerProfiles = computed(() => AppState.eventGoerProfiles)
 const identity = computed(() => AppState.identity)
 const isFilled = computed(() => AppState.activeTowerEvent.isFilled)
+const isGoing = computed(() => AppState.eventGoerProfiles.find(profileData => profileData.accountId == AppState.account.id))
+
 
 onMounted(() => {
     getEventById()
@@ -23,6 +25,7 @@ onMounted(() => {
 async function getEventById() {
     try {
         await towerEventsService.getEventById(route.params.eventId)
+
     }
     catch (error) {
         Pop.error('Couldnt get the specified event');
@@ -51,9 +54,11 @@ async function attendEvent() {
     }
 }
 
+
+
 async function getEventGoerProfiles() {
     try {
-
+        getEventById()
         await towerEventsService.getEventGoerProfiles(route.params.eventId)
     }
     catch (error) {
@@ -111,7 +116,7 @@ async function getEventGoerProfiles() {
                 </div>
                 <div class="col-12 d-flex mt-5 flex-column">
                     <span class="fw-bold fs-4 mb-3">See What Folks Are Saying</span>
-                    <div class="col-12">
+                    <div class="col-12 mb-4">
                         <div class="card bg-body-secondary " style="">
                             <div class="card-body d-flex justify-content-center flex-column">
                                 <form>
@@ -158,9 +163,13 @@ async function getEventGoerProfiles() {
                                 <h5 class="card-title text-center">Interested in Going?</h5>
                                 <p class="card-text text-center">Grab A Ticket
                                 </p>
-                                <button v-if="towerEvent.isAttending == false" @click="attendEvent()"
-                                    class="btn btn-info text-center">Attend</button>
-                                <button v-else disabled class="btn btn-success text-center">Attending</button>
+                                <div class="d-flex justify-content-center">
+                                    <span class="fw-bold fs-5 text-info text-center" v-if="isGoing">You are already
+                                        planning on
+                                        attending</span>
+                                </div>
+                                <button :disabled="!identity || isGoing != undefined" @click="attendEvent()" class="btn btn-success
+                                    text-center">Attend</button>
                             </div>
                             <div class="text-end">
                                 <span class="me-2">{{ eventGoerProfiles.length }} attending</span>
@@ -173,7 +182,7 @@ async function getEventGoerProfiles() {
                             <div class="card-body d-flex justify-content-center flex-column">
                                 <div v-for="eventGoer in eventGoerProfiles" :key="eventGoer.id" class="row mb-3">
                                     <div class="col-12  w-100 d-flex justify-content-center align-items-center">
-                                        <div class="border-start border-primary ">
+                                        <div class="border-start border-primary w-75">
 
                                             <img class="creator-img ms-2" :src="eventGoer.profile.picture" alt="">
                                             <span class="ms-3">{{ eventGoer.profile.name }}</span>

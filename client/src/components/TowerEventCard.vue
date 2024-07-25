@@ -11,7 +11,7 @@ defineProps({ eventProp: { type: TowerEvent, required: true } })
 
 <template>
     <RouterLink :to="{ name: 'Event Details', params: { eventId: eventProp.id } }">
-        <div class="col-12 mb-2">
+        <div class="col-12 mb-2 justify-content-center d-flex">
             <div class="card" style="width: 20rem;">
                 <img :src="eventProp.coverImg" class="card-img-top"
                     :alt="`An image of an event with the type of ${eventProp.type}`">
