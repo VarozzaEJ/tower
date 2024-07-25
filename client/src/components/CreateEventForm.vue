@@ -17,6 +17,7 @@ const eventData = ref({
     capacity: 0,
     startDate: new Date(), //NOTE this more than likely is wrong
     type: '',
+    startTime: new Date()
     //NOTE might need to put creator info in here??
 })
 
@@ -41,6 +42,7 @@ function resetForm() {
         location: '',
         capacity: 0,
         startDate: new Date(), //NOTE this more than likely is wrong
+        startTime: new Date(),
         type: '',
     }
 }
@@ -70,6 +72,13 @@ function resetForm() {
                 <label for="event-cover-img">Cover Image</label>
                 <input v-model="eventData.coverImg" class="form-control" type="url" id="event-cover-img"
                     name="event-cover-img" required>
+            </div>
+            <div class="mb-2 col-12 ">
+                <label for="event-start-date">Start Date</label>
+                <input v-model="eventData.startDate" class="form-control mb-2" id="event-start-date"
+                    name="event-start-date" required type="datetime-local">
+                <!-- <input v-model="eventData.startTime" class="form-control" id="event-start-time" name="event-start-time"
+                    required type="time"> -->
             </div>
             <div class="mb-2 col-12">
                 <label for="event-description">Description</label>

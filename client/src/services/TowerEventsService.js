@@ -50,8 +50,10 @@ class TowerEventsService {
 
     }
     async editEvent(eventData, eventId) {
+        // if (AppState.account.id != AppState.activeTowerEvent.creatorId) throw new Error("You cannot edit an event you didn't create")
         const response = await api.put(`api/events/${eventId}`, eventData)
         AppState.activeTowerEvent = new TowerEvent(response.data)
+        this.getEventById()
     }
 
     async attendEvent(eventGoerData) {
@@ -60,6 +62,7 @@ class TowerEventsService {
         AppState.eventGoerProfiles.push(newProfile)
         AppState.activeTowerEvent.ticketCount++
         AppState.activeTowerEvent.isAttending = true
+        AppState.activeTowerEvent.capacity--
         if (AppState.activeTowerEvent.capacity <= AppState.activeTowerEvent.ticketCount) AppState.activeTowerEvent.isFilled = true
     }
 

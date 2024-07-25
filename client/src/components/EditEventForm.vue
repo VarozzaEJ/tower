@@ -1,12 +1,15 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Pop from '../utils/Pop.js';
 import { towerEventsService } from '../services/TowerEventsService.js';
 import { Modal } from 'bootstrap';
+import { AppState } from '../AppState.js';
 
 const route = useRoute()
 const router = useRouter()
+
+const activeTowerEvent = computed(() => AppState.activeTowerEvent)
 
 const eventData = ref({
     name: '',
@@ -25,6 +28,7 @@ async function editEvent() {
         // if(!wantsToEdit) return
         const editedEvent = await towerEventsService.editEvent(eventData.value, route.params.eventId)
         Pop.success(`You have successfully updated ${editedEvent}`)
+
         // resetForm()
         Modal.getOrCreateInstance('#edit-event-modal').hide()
     }
@@ -70,6 +74,13 @@ function resetForm() {
                 <label for="event-cover-img">Cover Image</label>
                 <input v-model="eventData.coverImg" class="form-control" type="url" id="event-cover-img"
                     name="event-cover-img" required>
+            </div>
+            <div class="mb-2 col-12 ">
+                <label for="event-start-date">Start Date</label>
+                <input v-model="eventData.startDate" class="form-control mb-2" id="event-start-date"
+                    name="event-start-date" required type="datetime-local">
+                <!-- <input v-model="eventData.startTime" class="form-control" id="event-start-time" name="event-start-time"
+                    required type="time"> -->
             </div>
             <div class="mb-2 col-12">
                 <label for="event-description">Description</label>

@@ -10,6 +10,7 @@ export const TowerEventSchema = new Schema({
     location: { type: String, minlength: 1, maxlength: 500, required: true, default: 'Codeworks' },
     capacity: { type: Number, min: 1, max: 5000, required: true, default: 50 },
     startDate: { type: Date, required: true },
+    // startTime: { type: String, required: true, default: '00:00' },
     isCanceled: { type: Boolean, default: false, },
     type: { type: String, enum: ['concert', 'convention', 'sport', 'digital', 'misc'], required: true, default: 'misc', lowercase: true }
 }, { timestamps: true, toJSON: { virtuals: true } })

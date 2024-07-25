@@ -16,6 +16,8 @@ const identity = computed(() => AppState.identity)
 const isFilled = computed(() => AppState.activeTowerEvent.isFilled)
 const isGoing = computed(() => AppState.eventGoerProfiles.find(profileData => profileData.accountId == AppState.account?.id))
 const comments = computed(() => AppState.comments)
+const isCancelled = computed(() => AppState.activeTowerEvent.isCanceled)
+const capacity = computed(() => AppState.activeTowerEvent.capacity)
 
 const commentData = ref({
     body: '',
@@ -81,10 +83,18 @@ async function createComment() {
     try {
         await towerEventsService.createComment(commentData.value)
         Pop.success(`Successfully created comment`)
+        resetForm()
         //TODO reset form on submit once comments are finished
     }
     catch (error) {
         Pop.error('Could not create comment', 'error');
+    }
+}
+
+function resetForm() {
+    commentData.value = {
+        body: '',
+        eventId: route.params.eventId
     }
 }
 
@@ -119,7 +129,11 @@ async function deleteComment(commentId) {
 <template>
     <div v-if="towerEvent" class="container-fluid d-flex flex-column justify-content-center">
         <div class="row d-flex justify-content-end mt-2">
-            <div class="col-md-2 d-flex justify-content-end">
+            <!-- <div class="col-5 d-flex justify-content-start">
+                <button class="btn btn-success" data-bs-target="#edit-event-modal" data-bs-toggle="modal">Edit
+                    Event</button>
+            </div> -->
+            <div class="col-5 d-flex justify-content-end">
                 <button @click="cancelEvent" class=" btn btn-danger text-end">Cancel
                     Event</button>
             </div>
@@ -127,7 +141,7 @@ async function deleteComment(commentId) {
         <div class="row  justify-content-center d-flex mt-5 rounded">
 
             <div class="col-12 bg-body-secondary w-75 justify-content-center d-flex">
-                <img class=" img-fluid rounded" :src="towerEvent.coverImg" alt="">
+                <img class=" img-fluid rounded" :src="towerEvent.coverImg" :alt="`${towerEvent.name}'s picture`">
             </div>
         </div>
         <div class="row d-flex mt-4 justify-content-around">
@@ -137,7 +151,7 @@ async function deleteComment(commentId) {
                     </p>
                     <p v-else class="me-3 mb-0 fs-2 fw-bold">{{ towerEvent.name }}</p>
                     <div class="">
-                        <div role="" class="d-flex bg-primary rounded-pill text-light px-3 py-1 ms-2">
+                        <div role="" class="text-capitalize d-flex bg-primary rounded-pill text-light px-3 py-1 ms-2">
                             {{ towerEvent.type }}</div>
 
                     </div>
@@ -150,7 +164,7 @@ async function deleteComment(commentId) {
                 <div class="col-6 d-flex flex-column">
                     <span class="fw-bold fs-4">Date And Time</span>
                     <span class="fs-6"><i class="text-info fs-4 mdi mdi-calendar"></i>Starts {{
-                        towerEvent.startDate.toLocaleDateString() }} at {{ towerEvent.startDate.toLocaleTimeString() }}
+                        towerEvent.startDate.toDateString() }} at {{ towerEvent.startDate.toLocaleTimeString() }}
                     </span>
                 </div>
                 <div class="col-6 d-flex flex-column">
@@ -175,14 +189,15 @@ async function deleteComment(commentId) {
                                 </form>
                                 <div v-for="comment in comments" :key="comment.id" class="col-12 mt-3">
                                     <!-- TODO make component and v-for the comments on the line above -->
-                                    <div class="row border border-dark mb-3">
-                                        <div class="col-md-2 justify-content-between d-flex align-items-center">
+                                    <div class="row border rounded border-dark mb-3">
+                                        <div
+                                            class="col-md-4 justify-content-md-around justify-content-between d-flex align-items-center">
                                             <img class="creator-img" :src="comment.creator.picture" alt="">
                                             <div><button v-if="AppState.account?.id == comment.creator?.id"
-                                                    @click="deleteComment(comment.id)" class="btn btn-danger "><i
+                                                    @click="deleteComment(comment.id)" class=" btn btn-danger "><i
                                                         class="mdi mdi-delete-forever"></i></button></div>
                                         </div>
-                                        <div class="col-md-10 d-flex flex-column">
+                                        <div class="col-md-8 d-flex flex-column">
                                             <div class="d-flex flex-column">
                                                 <span class=" fw-bold fs-5">{{ comment.creator.name }}</span>
                                                 <span class="fs-6">{{ comment.body }}</span>
@@ -192,9 +207,7 @@ async function deleteComment(commentId) {
                                     </div>
                                 </div>
                             </div>
-                            <div class="text-end">
-                                <span class="me-2">2 Spots Left</span>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -210,27 +223,50 @@ async function deleteComment(commentId) {
                                 </p>
                                 <div class="d-flex justify-content-center">
                                     <span class="fw-bold fs-5 text-info text-center" v-if="isGoing">You are already
-                                        planning on
-                                        attending</span>
+                                        planning on attending
+                                    </span>
                                 </div>
-                                <button :disabled="!identity || isGoing != undefined" @click="attendEvent()" class="btn btn-success
+                                <button :disabled="!identity || isGoing != undefined || isFilled || isCancelled"
+                                    @click="attendEvent()" class="btn btn-success
                                     text-center">Attend</button>
                             </div>
-                            <div class="text-end">
-                                <span class="me-2">{{ eventGoerProfiles.length }} attending</span>
+                            <div class="row">
+                                <div class="col-6">
+
+                                    <span class="text-start ms-2">Capacity:
+                                        <span class="fw-bold">{{ capacity -
+                                            eventGoerProfiles.length
+                                            }}
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="col-6 text-end">
+
+                                    <span class="me-2 ">{{ eventGoerProfiles.length }} attending</span>
+                                </div>
+
+
+
+
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 mt-4">
-                        <span>Attendees</span>
+                    <div class="col-12 mt-4 mb-5">
+                        <span class="fs-4 fw-bold">Attendees</span>
                         <div class="card bg-body-secondary " style="">
-                            <div class="card-body d-flex justify-content-center flex-column">
+                            <div class="card-body d-flex justify-content-center flex-md-column">
                                 <div v-for="eventGoer in eventGoerProfiles" :key="eventGoer.id" class="row mb-3">
                                     <div class="col-12  w-100 d-flex justify-content-center align-items-center">
                                         <div class="border-start border-primary w-75">
-
-                                            <img class="creator-img ms-2" :src="eventGoer.profile.picture" alt="">
-                                            <span class="ms-3">{{ eventGoer.profile.name }}</span>
+                                            <div class="row">
+                                                <div class="col-md-4 col-5">
+                                                    <img class="creator-img ms-2" :src="eventGoer.profile.picture"
+                                                        alt="">
+                                                </div>
+                                                <div class="col-md-8 col-7">
+                                                    <span class="ms-3 w-100">{{ eventGoer.profile.name }}</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -244,9 +280,9 @@ async function deleteComment(commentId) {
             </div>
         </div>
     </div>
-    <!-- <ModalWrapper id="edit-event-modal">
+    <ModalWrapper id="edit-event-modal">
         <EditEventForm />
-    </ModalWrapper> -->
+    </ModalWrapper>
 </template>
 
 
