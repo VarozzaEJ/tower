@@ -52,6 +52,7 @@ class TowerEventsService {
         const response = await api.get(`api/events/${eventId}/tickets`)
         const eventGoerProfiles = await response.data.map(eventGoerData => new EventGoerProfile(eventGoerData))
         AppState.eventGoerProfiles = eventGoerProfiles
+        if (AppState.activeTowerEvent.capacity <= AppState.eventGoerProfiles.length) AppState.activeTowerEvent.isFilled = true
     }
 
 }
