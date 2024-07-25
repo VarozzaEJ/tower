@@ -18,4 +18,7 @@ export const AppState = reactive({
 
   /** @type {import('./models/Ticket.js').EventGoerEvent[]} user info from the database*/
   eventGoerEvents: [],
+
+  /** @type {import('./models/Comment.js').Comment[]} user info from the database*/
+  comments: [],
 })

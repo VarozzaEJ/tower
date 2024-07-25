@@ -1,4 +1,5 @@
 import { AppState } from "../AppState.js"
+import { Comment } from "../models/Comment.js"
 import { EventGoerEvent, EventGoerProfile, Ticket } from "../models/Ticket.js"
 import { TowerEvent } from "../models/TowerEvent.js"
 import { logger } from "../utils/Logger.js"
@@ -6,6 +7,17 @@ import { api } from "./AxiosService.js"
 
 
 class TowerEventsService {
+    async getAllComments(eventId) {
+        AppState.comments = []
+        const response = await api.get(`api/events/${eventId}/comments`)
+        const comments = response.data.map(commentData => new Comment(commentData))
+        AppState.comments = comments
+    }
+    async createComment(commentData) {
+        const response = await api.post('api/comments', commentData)
+        const newComment = new Comment(response.data)
+        AppState.comments.push(newComment)
+    }
 
     async cancelEvent(eventId) {
         const response = await api.delete(`api/events/${eventId}`)

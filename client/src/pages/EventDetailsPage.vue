@@ -4,7 +4,7 @@ import Pop from '../utils/Pop.js';
 import { towerEventsService } from '../services/TowerEventsService.js';
 import { logger } from '../utils/Logger.js';
 import { AppState } from '../AppState.js';
-import { capitalize, computed, onMounted } from 'vue';
+import { capitalize, computed, onMounted, ref } from 'vue';
 import EditEventForm from '../components/EditEventForm.vue';
 
 const route = useRoute()
@@ -15,10 +15,17 @@ const eventGoerProfiles = computed(() => AppState.eventGoerProfiles)
 const identity = computed(() => AppState.identity)
 const isFilled = computed(() => AppState.activeTowerEvent.isFilled)
 const isGoing = computed(() => AppState.eventGoerProfiles.find(profileData => profileData.accountId == AppState.account.id))
+const comments = computed(() => AppState.comments)
+
+const commentData = ref({
+    body: '',
+    eventId: route.params.eventId
+})
 
 
 onMounted(() => {
     getEventById()
+    getAllComments()
     getEventGoerProfiles()
 })
 
@@ -69,6 +76,25 @@ async function getEventGoerProfiles() {
     }
 }
 
+async function createComment() {
+    try {
+        await towerEventsService.createComment(commentData.value)
+        Pop.success(`Successfully created comment`)
+        //TODO reset form on submit once comments are finished
+    }
+    catch (error) {
+        Pop.error('Could not create comment', 'error');
+    }
+}
+
+async function getAllComments() {
+    try {
+        await towerEventsService.getAllComments(route.params.eventId)
+    }
+    catch (error) {
+        Pop.error('Error getting Comments');
+    }
+}
 
 
 </script>
@@ -121,28 +147,26 @@ async function getEventGoerProfiles() {
                     <div class="col-12 mb-4">
                         <div class="card bg-body-secondary " style="">
                             <div class="card-body d-flex justify-content-center flex-column">
-                                <form>
+                                <form @submit.prevent="createComment()">
                                     <div class="mb-3">
                                         <label for="comment" class="form-label"></label>
-                                        <textarea placeholder="Tell the people..." class="form-control" id="comment"
-                                            rows="3"></textarea>
+                                        <textarea v-model="commentData.body" placeholder="Tell the people..."
+                                            class="form-control" id="comment" rows="3" name="comment"></textarea>
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <button class="btn btn-success text-end">Submit</button>
+                                        <button type="submit" class="btn btn-success text-end">Submit</button>
                                     </div>
                                 </form>
-                                <div class="col-12 mt-3">
+                                <div v-for="comment in comments" :key="comment.id" class="col-12 mt-3">
                                     <!-- TODO make component and v-for the comments on the line above -->
                                     <div class="row border border-dark mb-3">
                                         <div class="col-2 d-flex align-items-center">
-                                            <img class="creator-img" :src="towerEvent.creator.picture" alt="">
+                                            <img class="creator-img" :src="comment.creator.picture" alt="">
                                         </div>
                                         <div class="col-md-10 d-flex flex-column">
                                             <div class="d-flex flex-column">
-                                                <span class=" fw-bold fs-5">Varozza, Evan</span>
-                                                <span class="fs-6">Lorem ipsum dolor sit amet consectetur adipisicing
-                                                    elit. Eos facere, porro laudantium voluptates totam aperiam odit
-                                                    distinctio recusandae ratione optio.</span>
+                                                <span class=" fw-bold fs-5">{{ comment.creator.name }}</span>
+                                                <span class="fs-6">{{ comment.body }}</span>
                                             </div>
 
                                         </div>
