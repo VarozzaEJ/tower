@@ -18,7 +18,6 @@ const isFilled = computed(() => AppState.activeTowerEvent.isFilled)
 onMounted(() => {
     getEventById()
     getEventGoerProfiles()
-
 })
 
 async function getEventById() {
@@ -54,6 +53,7 @@ async function attendEvent() {
 
 async function getEventGoerProfiles() {
     try {
+
         await towerEventsService.getEventGoerProfiles(route.params.eventId)
     }
     catch (error) {

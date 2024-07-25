@@ -29,6 +29,7 @@ class TowerEventsService {
         const response = await api.get(`api/events/${eventId}`)
         const activeTowerEvent = new TowerEvent(response.data)
         AppState.activeTowerEvent = activeTowerEvent
+        if (AppState.activeTowerEvent.capacity <= AppState.activeTowerEvent.ticketCount) AppState.activeTowerEvent.isFilled = true
     }
     async editEvent(eventData, eventId) {
         const response = await api.put(`api/events/${eventId}`, eventData)
@@ -49,10 +50,13 @@ class TowerEventsService {
     }
 
     async getEventGoerProfiles(eventId) {
+
         const response = await api.get(`api/events/${eventId}/tickets`)
         const eventGoerProfiles = await response.data.map(eventGoerData => new EventGoerProfile(eventGoerData))
         AppState.eventGoerProfiles = eventGoerProfiles
-        if (AppState.activeTowerEvent.capacity <= AppState.eventGoerProfiles.length) AppState.activeTowerEvent.isFilled = true
+
+
+        return AppState.eventGoerProfiles
     }
 
 }
