@@ -163,7 +163,7 @@ async function deleteComment(commentId) {
                 </div>
                 <div class="col-6 d-flex flex-column">
                     <span class="fw-bold fs-4">Date And Time</span>
-                    <span class="fs-6"><i class="text-info fs-4 mdi mdi-calendar"></i>Starts {{
+                    <span class="fs-6 timeStamp"><i class="text-info fs-4 mdi mdi-calendar"></i>Starts {{
                         towerEvent.startDate.toDateString() }} at {{ towerEvent.startDate.toLocaleTimeString() }}
                     </span>
                 </div>
@@ -184,17 +184,19 @@ async function deleteComment(commentId) {
                                             class="form-control" id="comment" rows="3" name="comment"></textarea>
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-success text-end">Submit</button>
+                                        <button role="button" title="create comment" type="submit"
+                                            class="btn btn-success text-end">Submit</button>
                                     </div>
                                 </form>
                                 <div v-for="comment in comments" :key="comment.id" class="col-12 mt-3">
                                     <!-- TODO make component and v-for the comments on the line above -->
-                                    <div class="row border rounded border-dark mb-3">
+                                    <div class="row border rounded border-dark mx-5 mb-3">
                                         <div
                                             class="col-md-4 justify-content-md-around justify-content-between d-flex align-items-center">
                                             <img class="creator-img" :src="comment.creator.picture" alt="">
                                             <div><button v-if="AppState.account?.id == comment.creator?.id"
-                                                    @click="deleteComment(comment.id)" class=" btn btn-danger "><i
+                                                    @click="deleteComment(comment.id)" role="button"
+                                                    title="Delete Comment" class=" btn btn-danger "><i
                                                         class="mdi mdi-delete-forever"></i></button></div>
                                         </div>
                                         <div class="col-md-8 d-flex flex-column">
@@ -230,19 +232,19 @@ async function deleteComment(commentId) {
                                     @click="attendEvent()" class="btn btn-success
                                     text-center">Attend</button>
                             </div>
-                            <div class="row">
-                                <div class="col-6">
+                            <div class="row justify-content-between">
+                                <div class="col-5 mx-1 d-flex justify-content-start text-start">
 
                                     <span class="text-start ms-2">Capacity:
-                                        <span class="fw-bold">{{ capacity -
-                                            eventGoerProfiles.length
-                                            }}
-                                        </span>
+                                    </span>
+                                    <span class="fw-bold">{{ capacity -
+                                        eventGoerProfiles.length
+                                        }}
                                     </span>
                                 </div>
-                                <div class="col-6 text-end">
-
-                                    <span class="me-2 ">{{ eventGoerProfiles.length }} attending</span>
+                                <div class="col-5 mx-1 d-flex justify-content-end text-end">
+                                    <span class="me-2 d-flex fw-bold">{{ eventGoerProfiles.length }}</span>
+                                    <span class="d-flex">Attending</span>
                                 </div>
 
 
@@ -254,17 +256,19 @@ async function deleteComment(commentId) {
                     <div class="col-12 mt-4 mb-5">
                         <span class="fs-4 fw-bold">Attendees</span>
                         <div class="card bg-body-secondary " style="">
-                            <div class="card-body d-flex justify-content-center flex-md-column">
+                            <div class="card-body d-flex justify-content-center flex-column">
                                 <div v-for="eventGoer in eventGoerProfiles" :key="eventGoer.id" class="row mb-3">
-                                    <div class="col-12  w-100 d-flex justify-content-center align-items-center">
+                                    <div class="col-12 w-100 d-flex justify-content-around align-items-center">
                                         <div class="border-start border-primary w-75">
-                                            <div class="row">
-                                                <div class="col-md-4 col-5">
+                                            <div class="row d-flex justify-content-between">
+                                                <div
+                                                    class="col-lg-3 col-5 d-flex align-items-center justify-content-center">
                                                     <img class="creator-img ms-2" :src="eventGoer.profile.picture"
                                                         alt="">
                                                 </div>
-                                                <div class="col-md-8 col-7">
-                                                    <span class="ms-3 w-100">{{ eventGoer.profile.name }}</span>
+                                                <div class="col-lg-8 col-7 d-flex align-items-center">
+                                                    <span class="ms-3 d-flex align-items-center w-75">{{
+                                                        eventGoer.profile.name }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -272,7 +276,7 @@ async function deleteComment(commentId) {
                                 </div>
                             </div>
                             <div class="text-end">
-                                <span class="me-2">see +8 more</span>
+                                <!-- <span class="me-2">see +8 more</span> -->
                             </div>
                         </div>
                     </div>
@@ -294,5 +298,10 @@ async function deleteComment(commentId) {
     border-radius: 50%;
     object-fit: cover;
     object-position: center;
+}
+
+.timeStamp {
+    width: 20rem;
+    // TODO turn date and Location span tags into columns so they are mobile friendly.
 }
 </style>

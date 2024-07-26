@@ -157,7 +157,7 @@ async function getAllEvents() {
 }
 
 .text-shadow {
-  text-shadow: 1px 1px black;
+  text-shadow: 2px 2px black;
 }
 
 .text-purple {
