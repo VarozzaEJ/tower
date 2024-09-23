@@ -8,6 +8,7 @@ import TowerEventCard from '../components/TowerEventCard.vue';
 
 
 const categoryFilter = ref('all')
+const account = computed(() => AppState.account)
 
 const towerEvents = computed(() => {
   if (categoryFilter.value == 'all') {
@@ -70,7 +71,11 @@ async function getAllEvents() {
           <div class="card-body">
             <h5 class="card-title">Start an event to invite your friends</h5>
             <p class="card-text">Create your own Tower event, and draw from a community of millions</p>
-            <button class="btn btn-success" data-bs-target="#create-event-modal" data-bs-toggle="modal">Create an Event
+            <button v-if="account" aria-label="create an event" class="btn btn-success"
+              data-bs-target="#create-event-modal" data-bs-toggle="modal">Create an Event
+              <i class="mdi mdi-plus"></i></button>
+            <button v-else title="Sign in to create an event" aria-label="disabled button, please sign in to create."
+              class="btn btn-success" disabled>Sign In To Create
               <i class="mdi mdi-plus"></i></button>
           </div>
         </div>
